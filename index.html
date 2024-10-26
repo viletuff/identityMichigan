@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Michigan</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            background: #FFFFFF;
+        }
+
+        /* Navigation Bar */
+        .nav {
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            color: #3b82f6;
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            color: #4b5563;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #3b82f6;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: black;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .cta-button:hover {
+            background: #1f2937;
+        }
+
+        .statistic {
+            margin-top: 2rem;
+            font-size: 1.125rem;
+        }
+
+        /* Privacy Notice */
+        .privacy-notice {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 4rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .privacy-notice h3 {
+            color: #3b82f6;
+            margin-top: 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #4b5563;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Identity Michigan</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="idTool.html" class="nav-link">Name Change Tool</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <h1>Being Transgender is Hard.</h1>
+        <h2>Let Us Help You.</h2>
+
+        <a href="idTool.html" class="cta-button">
+            Click This Button to Use Our Legal ID Tool
+        </a>
+
+        <p class="statistic">
+            Having an Accurate Legal ID connects with nearly 2 times as Much Wellbeing*
+        </p>
+
+        <!-- Privacy Notice -->
+        <div class="privacy-notice">
+            <h3>Privacy Notice</h3>
+            <p>
+                Your privacy is important to us. All responses and information entered into our tool 
+                are stored locally on your device only. We do not collect, store, or have access to 
+                any of your responses or personal information. The tool is designed to work entirely 
+                within your browser to protect your privacy.
+            </p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© <script>document.write(new Date().getFullYear())</script> Identity Michigan</p>
+    </footer>
+</body>
+</html>

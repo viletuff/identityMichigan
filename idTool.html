@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Michigan - Name Change Tool</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --error: #ef4444;
+            --background: #FFFFFF;
+            --text: #000000;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        /* Navigation Bar */
+        .nav {
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            color: #4b5563;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .question {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        .question p {
+            font-weight: 500;
+            margin-top: 0;
+            color: #1f2937;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background-color: #f8fafc;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            margin-right: 0.75rem;
+            accent-color: var(--primary);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 300px;
+            margin: 2rem auto;
+            display: block;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .validation-message {
+            display: none;
+            background-color: var(--error);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        #results {
+            margin-top: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .instruction-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .instruction-note {
+            background-color: #f8fafc;
+            padding: 1rem;
+            border-left: 3px solid var(--primary);
+            margin: 1rem 0;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+
+        .warning-note {
+            background-color: #fff7ed;
+            padding: 1rem;
+            border-left: 3px solid var(--warning);
+            margin: 1rem 0;
+            border-radius: 0 0.25rem 0.25rem 0;
+            color: #9a3412;
+        }
+
+        .privacy-notice {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .privacy-notice h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .conditional {
+            display: none;
+            margin-left: 2rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--primary);
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            .question {
+                padding: 1rem;
+            }
+
+            .option {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Identity Michigan</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="tool.html" class="nav-link">Name Change Tool</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Privacy Notice -->
+        <div class="privacy-notice">
+            <h3>Privacy Notice</h3>
+            <p>Your privacy is important to us. All responses and information entered into this tool are stored locally on your device only. We do not collect, store, or have access to any of your responses or personal information. The tool is designed to work entirely within your browser to protect your privacy.</p>
+        </div>
+
+        <div class="validation-message" id="validationMessage">
+            Please answer all questions before submitting.
+        </div>
+
+        <div id="quiz">
+            <!-- Question 1: Type of change -->
+            <div class="question">
+                <p>1. What type of change are you interested in?</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="change" value="name"> Name change</label>
+                    <label class="option"><input type="radio" name="change" value="gender"> Gender marker change</label>
+                    <label class="option"><input type="radio" name="change" value="both"> Both</label>
+                </div>
+            </div>
+
+            <!-- Question 2: Family Court -->
+            <div class="question">
+                <p>2. Have you been in a family court case before?</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="famCourt" value="noFam"> No</label>
+                    <label class="option"><input type="radio" name="famCourt" value="yesFam"> Yes</label>
+                </div>
+            </div>
+
+            <!-- Question 3: Age -->
+            <div class="question">
+                <p>3. What is your current age?</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="age" value="minor"> Under 18</label>
+                    <label class="option"><input type="radio" name="age" value="noBackground"> 18-21</label>
+                    <label class="option"><input type="radio" name="age" value="yesBackground"> 22 or older</label>
+                </div>
+            </div>
+
+            <!-- Question 4: Publication -->
+            <div class="question">
+                <p>4. Do you wish to keep your name change private? (void publication, if unsure click yes)</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="publication" value="yesNoPub"> Yes</label>
+                    <label class="option"><input type="radio" name="publication" value="noYesPub"> No</label>
+                </div>
+            </div>
+
+            <!-- Question 5: Criminal Record -->
+            <div class="question">
+                <p>5. Do you have a Criminal Record?</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="crimRec" value="noCrim"> No</label>
+                    <label class="option"><input type="radio" name="crimRec" value="misdemeanor"> Yes, misdemeanor</label>
+                    <label class="option"><input type="radio" name="crimRec" value="felony"> Yes, felony</label>
+                </div>
+            </div>
+
+            <!-- Question 6: Income -->
+            <div class="question">
+                <p>6. Are you low income?</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="govAssist" value="lowIncome"> Yes</label>
+                    <label class="option"><input type="radio" name="govAssist" value="highIncome"> No</label>
+                </div>
+            </div>
+
+            <!-- Question 7: ID Documents -->
+            <div class="question">
+                <p>7. What ID documents do you need updated? (Select all that apply)</p>
+                <div class="options">
+                    <label class="option"><input type="checkbox" name="idDoc" value="socialSec"> Social Security Card</label>
+                    <label class="option"><input type="checkbox" name="idDoc" value="driver"> Driver's License</label>
+                    <label class="option"><input type="checkbox" name="idDoc" value="passport" onclick="togglePassportQuestion()"> Passport</label>
+                    <label class="option"><input type="checkbox" name="idDoc" value="birthCert"> Birth Certificate</label>
+                </div>
+            </div>
+
+            <!-- Conditional Question for Passport -->
+            <div id="passportQuestion" class="conditional">
+                <p>How long has it been since you renewed your passport?</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="passportRenewal" value="lessThan1"> Less than 1 year after both passport renewed and name changed</label>
+                    <label class="option"><input type="radio" name="passportRenewal" value="morethan1"> More than 1 year after Passport was issued OR name was changed</label>
+                </div>
+            </div>
+
+            <button onclick="generateInstructions()">Generate Instructions</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+    <script>
+        function togglePassportQuestion() {
+            const passportCheckbox = document.querySelector('input[name="idDoc"][value="passport"]');
+            const passportQuestion = document.getElementById('passportQuestion');
+            
+            if (passportCheckbox.checked) {
+                passportQuestion.style.display = 'block';
+            } else {
+                passportQuestion.style.display = 'none';
+            }
+        }
+    
+        function generateInstructions() {
+            // Get selected values from the form
+            const change = document.querySelector('input[name="change"]:checked');
+            const age = document.querySelector('input[name="age"]:checked');
+            const publication = document.querySelector('input[name="publication"]:checked');
+            const famCourt = document.querySelector('input[name="famCourt"]:checked');
+            const govAssist = document.querySelector('input[name="govAssist"]:checked');
+            const crimRec = document.querySelector('input[name="crimRec"]:checked');
+            const idDocs = document.querySelectorAll('input[name="idDoc"]:checked');
+            const validationMessage = document.getElementById('validationMessage');
+    
+            // Ensure all questions are answered
+            if (!change || !age || !publication || !famCourt || !govAssist || !crimRec || idDocs.length === 0) {
+                validationMessage.style.display = 'block';
+                // Hide message after 3 seconds
+                setTimeout(() => {
+                    validationMessage.style.display = 'none';
+                }, 3000);
+                return;
+            }
+    
+            // Hide validation message if all is well
+            validationMessage.style.display = 'none';
+    
+            const changeValue = change.value;
+            const ageValue = age.value;
+            const publicationValue = publication.value;
+            const govAssistValue = govAssist.value;
+            const crimRecValue = crimRec.value;
+            const famCourtValue = famCourt.value;
+            
+            // Initialize instructions with main title
+            let instructions = '<h1 class="section-title">Legal ID Change Instructions</h1>';
+    
+            // Previous Court History Section
+            if (famCourtValue === 'yesFam') {
+                instructions += '<div class="instruction-section">';
+                instructions += '<h2 class="section-title">Previous Court History</h2>';
+                instructions += '<div class="warning-note">';
+                instructions += 'You indicated that you have previous family court history. This may affect your case in the following ways:';
+                instructions += '<ul style="margin-top: 0.5rem;">';
+                instructions += '<li>You will need to provide information about your previous court cases on your petition</li>';
+                instructions += '<li>The judge may request records from your previous cases</li>';
+                instructions += '<li>Processing time might be longer than usual</li>';
+                instructions += '</ul>';
+                instructions += 'It is recommended to:';
+                instructions += '<ul style="margin-bottom: 0;">';
+                instructions += '<li>Gather documentation from your previous court cases</li>';
+                instructions += '<li>Consider consulting with a legal aid organization for guidance</li>';
+                instructions += '</ul>';
+                instructions += '</div></div>';
+            }
+    
+            // Criminal Record Section
+            if (crimRecValue !== 'noCrim') {
+                instructions += '<div class="instruction-section">';
+                instructions += '<h2 class="section-title">Criminal Record Considerations</h2>';
+                
+                if (crimRecValue === 'misdemeanor') {
+                    instructions += '<div class="warning-note">';
+                    instructions += 'You indicated that you have a misdemeanor record. Please note:';
+                    instructions += '<ul style="margin-top: 0.5rem;">';
+                    instructions += '<li>Any Criminal Record can drastically complicate the process, if under the age of 22 this shouldn\'t show up because you aren\'t required to have a background check </li>';
+                    instructions += '<li>Having a criminal record (even if expunged) puts a presumption of changing your name for fraudulent intent</li>';
+                    instructions += '<li>I would reccamend talking to an attorney or someone who has gone through the process in your County to know what the burden of proof is and how difficult it is</li>';
+                    instructions += '<li>I\'m very sorry about the current state of things in America, I wish you luck <3</li>';
+                    instructions += '</ul>';
+                    instructions += '</div>';
+                } else if (crimRecValue === 'felony') {
+                    instructions += '<div class="warning-note">';
+                    instructions += 'You indicated that you have a felony record. Important considerations:';
+                    instructions += '<ul style="margin-top: 0.5rem;">';
+                    instructions += '<li>Felony convictions can significantly impact name change petitions</li>';
+                    instructions += '<li>Depending on jurisdiction, felonies may prevent you from getting your legal name change</li>';
+                    instructions += '<li>There is a presumption that you are changing your name for fraudulent reasons and you have to show evidence that you are not doing so for fraudulent reasons</li>';
+                    instructions += '<li>I highly reccamend hiring an attorney or going through an organization like <a href="https://grtransfoundation.org/update-program/" target="_blank">GR Trans Foundation</a></li>';
+                    instructions += '<li>I\'m very sorry about the current state of things in America, I wish you luck <3</li>';
+                    instructions += '</ul>';
+                    instructions += '</div>';
+                }
+                instructions += '</div>';
+            }
+            
+        // Name Change Section
+        if (changeValue === 'name' || changeValue === 'both') {
+            instructions += '<div class="instruction-section">';
+            instructions += '<h2 class="section-title">Name Change Process</h2>';
+            instructions += '<ol class="instruction-list">';
+            
+            if (publicationValue === 'yesNoPub') {
+                instructions += '<li>Print and fill out Non-Publication and Ex-Parte Request Petition for Name Change form <a href="https://www.courts.michigan.gov/49b1e6/siteassets/forms/scao-approved/pc51c.pdf" target="_blank">PC51c</a></li>';
+                instructions += '<li>On page 3, fill reason for not wanting to publish, common reason is "I fear that I may be in danger because of the current political climate"</li>';
+            } else {
+                instructions += '<li>Print and fill out Petition for Name Change form <a href="https://www.courts.michigan.gov/49b1e4/siteassets/forms/scao-approved/pc51.pdf" target="_blank">PC51</a></li>';
+                instructions += '<li>Ensure that at least 2 weeks before the court date that you publish your name in a newspaper\'s affidavit. This can range in price depending on if you want it to be private (law journals) or if in a more public newspaper. I\'d recommend asking the Family Court or Police Department how long the expected wait time is for the background check.</li>';
+            }
+            
+            instructions += '<li>File with the Family Court you are a current resident in. If unsure where the Family Court is located, call them or County Clerk</li>';
+            
+            if (govAssistValue === 'lowIncome') {
+                instructions += '<div class="instruction-note">If low income you may qualify for <a href="https://www.courts.michigan.gov/4a302d/siteassets/forms/scao-approved/mc20.pdf" target="_blank">a publication fee waiver</a>.</div>';
+            }
+            
+            instructions += '<li>Once received letter in mail approving Petition for Name Change, call Family Court to set court date. This can vary largely depending on County, can range from 1 week to 4 months. At this point, you should get your background check and publication as soon as possible to ensure enough time.</li>';
+            instructions += '</ol>';
+            instructions += '</div>';
+        }
+        
+        // Background Check Section
+        if (ageValue === 'yesBackground') {
+            instructions += '<div class="instruction-section">';
+            instructions += '<h2 class="section-title">Background Check Requirements</h2>';
+            instructions += '<ol class="instruction-list">';
+            instructions += '<li>Ask Family Court how fingerprints need to be submitted, and if needs to be on RI-008 card</li>';
+            instructions += '<li>Go to local police station to get fingerprinted (cost: $43.25)</li>';
+            instructions += '</ol>';
+            instructions += '</div>';
+        }
+
+        // Court Hearing Section
+        if (changeValue === 'name' || changeValue === 'both') {
+            instructions += '<div class="instruction-section">';
+            instructions += '<h2 class="section-title">Court Hearing Information</h2>';
+            instructions += '<ol class="instruction-list">';
+            instructions += '<li>The court hearing should be fairly straight forward and less than 10 minutes overall (most of mine was spelling out my name). Unfortunately many judges will ask invasive questions about your gender journey; it depends on the judge how ignorant they are, for the most part you can say generic answers. I would recommend practicing before the hearing to ensure you\'re emotionally safe and confident in what you\'re saying</li>';
+            instructions += '<li>Immediately after the court hearing, go to Family Court to buy at least 3 copies of the Court Order (cost depends on County)</li>';
+            instructions += '</ol>';
+            instructions += '</div>';
+        }
+
+        // Document Updates Section
+        if (idDocs.length > 0) {
+            instructions += '<div class="instruction-section">';
+            instructions += '<h2 class="section-title">Document Updates</h2>';
+
+            // Process each document type
+            idDocs.forEach(idDoc => {
+                const idDocValue = idDoc.value;
+                
+                if (idDocValue === 'socialSec') {
+                    instructions += '<h3 class="subsection-title">Social Security Card</h3>';
+                    instructions += '<ol class="instruction-list">';
+                    instructions += '<li>Fill form <a href="https://www.ssa.gov/forms/ss-5fs.pdf" target="_blank">SS-5</a> (no cost)</li>';
+                    instructions += '<li>Mail to your local Social Security office (address can be found online)</li>';
+                    instructions += '</ol>';
+                }
+                
+                if (idDocValue === 'driver') {
+                    instructions += '<h3 class="subsection-title">Driver\'s License</h3>';
+                    instructions += '<ol class="instruction-list">';
+                    if (changeValue === 'gender' || changeValue === 'both') {
+                        instructions += '<li>Fill out <a href="https://www.michigan.gov/-/media/Project/Websites/sos/34lawens/MDOS_Sex_designation_form.pdf" target="_blank">Secretary of State Sex Designation Form</a></li>';
+                    }
+                    if (changeValue === 'name' || changeValue === 'both') {
+                        instructions += '<li>Set appointment with local Secretary of State, this <a href="https://www.michigan.gov/sos/faqs/resources/scheduling-an-office-visit" target="_blank">can be done online</a></li>';
+                        instructions += '<li>Bring 1 copy of Court Order verifying name change</li>';
+                    }
+                    instructions += '</ol>';
+                }
+
+                if (idDocValue === 'birthCert') {
+                    instructions += '<h3 class="subsection-title">Birth Certificate</h3>';
+                    instructions += '<ol class="instruction-list">';
+                    if (changeValue === 'name' || changeValue === 'both') {
+                        instructions += '<li>Fill out <a href="https://www.michigan.gov/mdhhs/-/media/Project/Websites/mdhhs/Folder1/Folder3/DCH-0847-CHGBX.pdf" target="_blank">Application to Change or Correct Michigan Birth Certificate</a></li>';
+                        instructions += '<li>Include 1 copy of Court Order in envelope</li>';
+                    }
+                    if (changeValue === 'gender' || changeValue === 'both') {
+                        instructions += '<li>Fill out <a href="https://www.michigan.gov/-/media/Project/Websites/mdhhs/Folder3/Folder17/Folder217/Sex_Designation_Application.pdf" target="_blank">Michigan Sex Designation Form</a></li>';
+                    }
+                    instructions += '<li>Include SCANNED COPY of Driver\'s License or State ID in envelope. They WILL NOT return any original copies of documents, including an original ID document and a Court Order</li>';
+                    instructions += '<li>Include processing fee in envelope: $50 for regular, $75 for RUSH shipping</li>';
+                    instructions += '<div class="instruction-note">If affordable, RUSH shipping is highly recommended. Vital Records is notoriously not good at this process (they lost the 2nd page of my STAPLED Court Order). Having RUSH shipping can DRASTICALLY lower slow downs (can be up to 4 months if regular shipping)</div>';
+                    instructions += '<li>Mail to appropriate address:';
+                    instructions += '<br>For Regular shipping:<br>';
+                    instructions += 'Vital Records Changes<br>P.O. Box 30721<br>Lansing, MI 48909';
+                    instructions += '<br><br>For RUSH shipping:<br>';
+                    instructions += 'Vital Records Changes RUSH<br>P.O. Box 30721<br>Lansing, MI 48909</li>';
+                    instructions += '</ol>';
+                }
+
+                if (idDocValue === 'passport') {
+                    instructions += '<h3 class="subsection-title">Passport</h3>';
+                    const passportRenewal = document.querySelector('input[name="passportRenewal"]:checked');
+                    if (passportRenewal) {
+                        const passportRenewalValue = passportRenewal.value;
+                        
+                        if (passportRenewalValue === 'lessThan1' && (changeValue === 'name' || changeValue === 'both')) {
+                            instructions += '<h4>Less than 1 Year Since Last Passport</h4>';
+                            instructions += '<ol class="instruction-list">';
+                            instructions += '<li>Fill out Form <a href="https://pptform.state.gov/" target="_blank">DS-5504</a></li>';
+                            instructions += '<li>Required documents to submit by mail:';
+                            instructions += '<ul>';
+                            instructions += '<li>Your most recent passport</li>';
+                            instructions += '<li>Original or certified court order showing name change (must be less than one year old)</li>';
+                            instructions += '<li><a href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html" target="_blank">Recent passport photo</a></li>';
+                            instructions += '</ul></li>';
+                            instructions += '<div class="instruction-note">No fee required unless requesting expedited service ($60)</div>';
+                            instructions += '</ol>';
+                        }
+                        
+                        if (passportRenewalValue === 'morethan1' && (changeValue === 'name' || changeValue === 'both')) {
+                            instructions += '<h4>More than 1 Year Since Last Passport</h4>';
+                            instructions += '<ol class="instruction-list">';
+                            instructions += '<li>Fill out Form DS-82 (<a href="https://pptform.state.gov/" target="_blank">Get form here</a>)</li>';
+                            instructions += '<li>Required documents to submit:';
+                            instructions += '<ul>';
+                            instructions += '<li>Completed DS-82 form</li>';
+                            instructions += '<li>1 copy of your court order</li>';
+                            instructions += '<li><a href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html" target="_blank">Recent passport photo</a></li>';
+                            instructions += '<li>Current passport</li>';
+                            instructions += '</ul></li>';
+                            instructions += '<li>Mail using USPS, UPS, FedEx, or DHL</li>';
+                            instructions += '</ol>';
+                        }
+                    }
+                }
+            });
+            
+            instructions += '</div>'; // Close Document Updates section
+        }
+        
+        // Display instructions on the page
+        document.getElementById('results').innerHTML = instructions;
+        
+        // Smooth scroll to results
+        document.getElementById('results').scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    }
+</script>
+</body>
+</html>
