@@ -72,17 +72,35 @@
             color: var(--primary);
         }
 
+        /* Main Content Layout */
+        .main-content-wrapper {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: start;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .quiz-section {
+            width: 100%;
+        }
+
+        .cost-section {
+            position: sticky;
+            top: 2rem;
+            width: 100%;
+        }
+
         /* Cost Summary Panel */
         .cost-summary {
-            position: sticky;
-            top: 80px;
             background: white;
             padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             margin-bottom: 2rem;
             border: 2px solid var(--accent);
-            z-index: 90;
         }
 
         .cost-summary h3 {
@@ -122,7 +140,7 @@
 
         /* Main Content */
         .container {
-            max-width: 800px;
+            max-width: 1280px;
             margin: 2rem auto;
             padding: 0 1.5rem;
         }
@@ -179,7 +197,8 @@
             background: var(--accent);
             transform: translateX(4px);
         }
-		input[type="radio"],
+
+        input[type="radio"],
         input[type="checkbox"] {
             width: 1.2rem;
             height: 1.2rem;
@@ -252,7 +271,9 @@
         .instruction-list li {
             margin-bottom: 1rem;
         }
-
+</style>
+</head>
+	<style>
         .instruction-note {
             background-color: var(--secondary);
             padding: 1.25rem;
@@ -281,7 +302,7 @@
             margin-left: 0.5rem;
         }
 
-  .privacy-notice {
+        .privacy-notice {
             background: white;
             padding: 2rem;
             border-radius: 16px;
@@ -301,17 +322,6 @@
         .privacy-notice p {
             margin-bottom: 0;
             color: var(--text);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-10px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
         }
 
         .conditional {
@@ -344,6 +354,29 @@
             border-bottom: 1px solid var(--accent);
         }
 
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .main-content-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .cost-section {
+                position: static;
+                margin-top: 2rem;
+            }
+        }
+
         @media (max-width: 640px) {
             .container {
                 padding: 0 1rem;
@@ -366,8 +399,8 @@
             }
         }
     </style>
-</head>
-	<body>
+
+<body>
     <!-- Navigation Bar -->
     <nav class="nav">
         <div class="nav-container">
@@ -378,216 +411,241 @@
     </nav>
 
     <div class="container">
-        <!-- Cost Summary Panel -->
-        <div class="cost-summary" id="costSummary" style="display: none;">
-            <h3>📊 Estimated Costs</h3>
-            <ul class="cost-list" id="costList">
-                <!-- Costs will be populated here -->
-            </ul>
-            <div class="total-cost">
-                <span>Total Estimated Cost:</span>
-                <span id="totalCost">$0.00</span>
-            </div>
-        </div>
-
-      <!-- Privacy Notice -->
+        <!-- Privacy Notice -->
         <div class="privacy-notice">
             <h3>Privacy Notice</h3>
             <p>All responses are kept local on your device and I have no way of being able to access them.</p>
-      </div>
+        </div>
 
         <div class="validation-message" id="validationMessage">
             Please answer all questions before submitting.
         </div>
 
-        <div id="quiz">
-            <!-- Question 1: Type of change -->
-            <div class="question">
-                <p>1. What type of change are you interested in?</p>
-                <div class="options">
-                    <label class="option"><input type="radio" name="change" value="name"> Name change</label>
-                    <label class="option"><input type="radio" name="change" value="gender"> Gender marker change</label>
-                    <label class="option"><input type="radio" name="change" value="both"> Both</label>
+        <!-- New wrapper for two-column layout -->
+        <div class="main-content-wrapper">
+            <!-- Left column: Quiz and Results -->
+            <div class="quiz-section">
+                <div id="quiz">
+                    <!-- Question 1: Type of change -->
+                    <div class="question">
+                        <p>1. What type of change are you interested in?</p>
+                        <div class="options">
+                            <label class="option"><input type="radio" name="change" value="name"> Name change</label>
+                            <label class="option"><input type="radio" name="change" value="gender"> Gender marker change</label>
+                            <label class="option"><input type="radio" name="change" value="both"> Both</label>
+                        </div>
+                    </div>
+
+                    <!-- Question 2: Family Court -->
+                    <div class="question">
+                        <p>2. Have you been in a family court case before?</p>
+                        <div class="options">
+                            <label class="option"><input type="radio" name="famCourt" value="noFam"> No</label>
+                            <label class="option"><input type="radio" name="famCourt" value="yesFam"> Yes</label>
+                        </div>
+                    </div>
+
+                    <!-- Question 3: Age -->
+                    <div class="question">
+                        <p>3. What is your current age?</p>
+                        <div class="options">
+                            <label class="option"><input type="radio" name="age" value="minor"> Under 18</label>
+                            <label class="option"><input type="radio" name="age" value="noBackground"> 18-21</label>
+                            <label class="option"><input type="radio" name="age" value="yesBackground"> 22 or older</label>
+                        </div>
+                    </div>
+
+                    <!-- Question 4: Publication -->
+                    <div class="question">
+                        <p>4. Do you wish to keep your name change private? (void publication, if unsure click yes)</p>
+                        <div class="options">
+                            <label class="option"><input type="radio" name="publication" value="yesNoPub"> Yes</label>
+                            <label class="option"><input type="radio" name="publication" value="noYesPub"> No</label>
+                        </div>
+                    </div>
+
+                    <!-- Question 5: Criminal Record -->
+                    <div class="question">
+                        <p>5. Do you have a Criminal Record?</p>
+                        <div class="options">
+                            <label class="option"><input type="radio" name="crimRec" value="noCrim"> No</label>
+                            <label class="option"><input type="radio" name="crimRec" value="misdemeanor"> Yes, misdemeanor</label>
+                            <label class="option"><input type="radio" name="crimRec" value="felony"> Yes, felony</label>
+                        </div>
+                    </div>
+
+                    <!-- Question 6: Income -->
+                    <div class="question">
+                        <p>6. Are you low income?</p>
+                        <div class="options">
+                            <label class="option"><input type="radio" name="govAssist" value="lowIncome"> Yes</label>
+                            <label class="option"><input type="radio" name="govAssist" value="highIncome"> No</label>
+                        </div>
+                    </div>
+
+                    <!-- Question 7: ID Documents -->
+                    <div class="question">
+                        <p>7. What ID documents do you need updated? (Select all that apply)</p>
+                        <div class="options">
+                            <label class="option"><input type="checkbox" name="idDoc" value="socialSec"> Social Security Card</label>
+                            <label class="option"><input type="checkbox" name="idDoc" value="driver"> Driver's License</label>
+                            <label class="option"><input type="checkbox" name="idDoc" value="passport" onclick="togglePassportQuestion()"> Passport</label>
+                            <label class="option"><input type="checkbox" name="idDoc" value="birthCert"> Birth Certificate</label>
+                        </div>
+                    </div>
+
+                    <!-- Conditional Question for Passport -->
+                    <div id="passportQuestion" class="conditional">
+                        <p>How long has it been since you renewed your passport?</p>
+                        <div class="options">
+                            <label class="option"><input type="radio" name="passportRenewal" value="lessThan1"> Less than 1 year after both passport renewed and name changed</label>
+                            <label class="option"><input type="radio" name="passportRenewal" value="morethan1"> More than 1 year after Passport was issued OR name was changed</label>
+                        </div>
+                    </div>
+
+                    <button onclick="generateInstructions()">Generate Your Personalized Instructions</button>
                 </div>
+                <div id="results"></div>
             </div>
 
-            <!-- Question 2: Family Court -->
-            <div class="question">
-                <p>2. Have you been in a family court case before?</p>
-                <div class="options">
-                    <label class="option"><input type="radio" name="famCourt" value="noFam"> No</label>
-                    <label class="option"><input type="radio" name="famCourt" value="yesFam"> Yes</label>
+            <!-- Right column: Cost Summary -->
+            <div class="cost-section">
+                <div class="cost-summary" id="costSummary" style="display: none;">
+                    <h3>Estimated Costs</h3>
+                    <ul class="cost-list" id="costList">
+                        <!-- Costs will be populated here -->
+                    </ul>
+                    <div class="total-cost">
+                        <span>Total Estimated Cost:</span>
+                        <span id="totalCost">$0.00</span>
+                    </div>
                 </div>
             </div>
-
-            <!-- Question 3: Age -->
-            <div class="question">
-                <p>3. What is your current age?</p>
-                <div class="options">
-                    <label class="option"><input type="radio" name="age" value="minor"> Under 18</label>
-                    <label class="option"><input type="radio" name="age" value="noBackground"> 18-21</label>
-                    <label class="option"><input type="radio" name="age" value="yesBackground"> 22 or older</label>
-                </div>
-            </div>
-
-            <!-- Question 4: Publication -->
-            <div class="question">
-                <p>4. Do you wish to keep your name change private? (void publication, if unsure click yes)</p>
-                <div class="options">
-                    <label class="option"><input type="radio" name="publication" value="yesNoPub"> Yes</label>
-                    <label class="option"><input type="radio" name="publication" value="noYesPub"> No</label>
-                </div>
-            </div>
-
-            <!-- Question 5: Criminal Record -->
-            <div class="question">
-                <p>5. Do you have a Criminal Record?</p>
-                <div class="options">
-                    <label class="option"><input type="radio" name="crimRec" value="noCrim"> No</label>
-                    <label class="option"><input type="radio" name="crimRec" value="misdemeanor"> Yes, misdemeanor</label>
-                    <label class="option"><input type="radio" name="crimRec" value="felony"> Yes, felony</label>
-                </div>
-            </div>
-
-            <!-- Question 6: Income -->
-            <div class="question">
-                <p>6. Are you low income?</p>
-                <div class="options">
-                    <label class="option"><input type="radio" name="govAssist" value="lowIncome"> Yes</label>
-                    <label class="option"><input type="radio" name="govAssist" value="highIncome"> No</label>
-                </div>
-            </div>
-
-            <!-- Question 7: ID Documents -->
-            <div class="question">
-                <p>7. What ID documents do you need updated? (Select all that apply)</p>
-                <div class="options">
-                    <label class="option"><input type="checkbox" name="idDoc" value="socialSec"> Social Security Card</label>
-                    <label class="option"><input type="checkbox" name="idDoc" value="driver"> Driver's License</label>
-                    <label class="option"><input type="checkbox" name="idDoc" value="passport" onclick="togglePassportQuestion()"> Passport</label>
-                    <label class="option"><input type="checkbox" name="idDoc" value="birthCert"> Birth Certificate</label>
-                </div>
-            </div>
-
-            <!-- Conditional Question for Passport -->
-            <div id="passportQuestion" class="conditional">
-                <p>How long has it been since you renewed your passport?</p>
-                <div class="options">
-                    <label class="option"><input type="radio" name="passportRenewal" value="lessThan1"> Less than 1 year after both passport renewed and name changed</label>
-                    <label class="option"><input type="radio" name="passportRenewal" value="morethan1"> More than 1 year after Passport was issued OR name was changed</label>
-                </div>
-            </div>
-
-
-            <button onclick="generateInstructions()">Generate Your Personalized Instructions</button>
         </div>
-
-        <div id="results"></div>
     </div>
-    
+
+
     <script>
-         const costs = {
-            courtFees: 175,
-            fingerprinting: 43.25,
-            birthCertRegular: 50,
-            birthCertRush: 75,
-            passportRegular: 130,
-            passportExpedited: 190
-        };
+       const costs = {
+    courtFees: 175,
+    fingerprinting: 43.25,
+    birthCertRegular: 50,
+    birthCertRush: 75,
+    passportRegular: 0,
+    passportExpedited: 60,
+    driverFeesGender: 19,
+    driverFeesName: 19,
+    courtOrder: 20
+};
 
-        const selectedCosts = new Map();
+const selectedCosts = new Map();
 
-        function addCost(description, amount) {
-            selectedCosts.set(description, amount);
-            updateCostSummary();
+function addCost(description, amount) {
+    selectedCosts.set(description, amount);
+    updateCostSummary();
+}
+
+function removeCost(description) {
+    selectedCosts.delete(description);
+    updateCostSummary();
+}
+
+function updateCostSummary() {
+    const costList = document.getElementById('costList');
+    const totalCostElement = document.getElementById('totalCost');
+    const costSummary = document.getElementById('costSummary');
+    
+    costList.innerHTML = '';
+    let total = 0;
+
+    selectedCosts.forEach((amount, description) => {
+        const li = document.createElement('li');
+        li.className = 'cost-item';
+        li.innerHTML = `<span>${description}</span><span>$${amount.toFixed(2)}</span>`;
+        costList.appendChild(li);
+        total += amount;
+    });
+
+    totalCostElement.textContent = `$${total.toFixed(2)}`;
+    costSummary.style.display = selectedCosts.size > 0 ? 'block' : 'none';
+}
+
+function togglePassportQuestion() {
+    const passportCheckbox = document.querySelector('input[name="idDoc"][value="passport"]');
+    const passportQuestion = document.getElementById('passportQuestion');
+    
+    if (passportCheckbox.checked) {
+        passportQuestion.style.display = 'block';
+    } else {
+        passportQuestion.style.display = 'none';
+        // Clear passport renewal selection when passport is unchecked
+        const passportRadios = document.getElementsByName('passportRenewal');
+        passportRadios.forEach(radio => radio.checked = false);
+        removeCost('Passport Fee');
+    }
+}
+
+function generateInstructions() {
+    // Clear previous costs
+    selectedCosts.clear();
+
+    // Get all form values
+    const changeValue = document.querySelector('input[name="change"]:checked')?.value;
+    const ageValue = document.querySelector('input[name="age"]:checked')?.value;
+    const publicationValue = document.querySelector('input[name="publication"]:checked')?.value;
+    const famCourtValue = document.querySelector('input[name="famCourt"]:checked')?.value;
+    const govAssistValue = document.querySelector('input[name="govAssist"]:checked')?.value;
+    const crimRecValue = document.querySelector('input[name="crimRec"]:checked')?.value;
+    const idDocs = document.querySelectorAll('input[name="idDoc"]:checked');
+    const validationMessage = document.getElementById('validationMessage');
+
+    // Validate form
+    if (!changeValue || !ageValue || !publicationValue || !famCourtValue || !govAssistValue || !crimRecValue || idDocs.length === 0) {
+        validationMessage.style.display = 'block';
+        setTimeout(() => {
+            validationMessage.style.display = 'none';
+        }, 3000);
+        return;
+    }
+
+    // Add base court fees if name change is selected
+    if (changeValue === 'name' || changeValue === 'both') {
+        if (govAssistValue === 'lowIncome') {
+            addCost('Court Fees (Fee Waiver May Be Available)', costs.courtFees);
+        } else {
+            addCost('Court Fees', costs.courtFees);
         }
+    }
 
-        function removeCost(description) {
-            selectedCosts.delete(description);
-            updateCostSummary();
+    // Add fingerprinting cost if required
+    if (ageValue === 'yesBackground') {
+        if (govAssistValue === 'lowIncome') {
+            addCost('Fingerprinting (Fee Waiver May Be Available)', costs.fingerprinting);
+        } else {
+            addCost('Fingerprinting', costs.fingerprinting);
         }
+    }
 
-        function updateCostSummary() {
-            const costList = document.getElementById('costList');
-            const totalCostElement = document.getElementById('totalCost');
-            const costSummary = document.getElementById('costSummary');
-            
-            costList.innerHTML = '';
-            let total = 0;
-
-            selectedCosts.forEach((amount, description) => {
-                const li = document.createElement('li');
-                li.className = 'cost-item';
-                li.innerHTML = `<span>${description}</span><span>$${amount.toFixed(2)}</span>`;
-                costList.appendChild(li);
-                total += amount;
-            });
-
-            totalCostElement.textContent = `$${total.toFixed(2)}`;
-            costSummary.style.display = selectedCosts.size > 0 ? 'block' : 'none';
+    // Add costs for selected ID documents
+    idDocs.forEach(doc => {
+        if (doc.value === 'birthCert') {
+            addCost('Birth Certificate Fee', costs.birthCertRegular);
         }
-
-        function togglePassportQuestion() {
-            const passportCheckbox = document.querySelector('input[name="idDoc"][value="passport"]');
-            const passportQuestion = document.getElementById('passportQuestion');
-            
-            if (passportCheckbox.checked) {
-                passportQuestion.style.display = 'block';
-            } else {
-                passportQuestion.style.display = 'none';
-                removeCost('Passport Fee');
+        if (doc.value === 'passport') {
+            const passportRenewal = document.querySelector('input[name="passportRenewal"]:checked');
+            if (passportRenewal && passportRenewal.value === 'morethan1') {
+                addCost('Passport Fee', costs.passportRegular);
             }
         }
-
-        function generateInstructions() {
-            // Clear previous costs
-            selectedCosts.clear();
-
-            // Get all form values
-            const changeValue = document.querySelector('input[name="change"]:checked')?.value;
-            const ageValue = document.querySelector('input[name="age"]:checked')?.value;
-            const publicationValue = document.querySelector('input[name="publication"]:checked')?.value;
-            const famCourtValue = document.querySelector('input[name="famCourt"]:checked')?.value;
-            const govAssistValue = document.querySelector('input[name="govAssist"]:checked')?.value;
-            const crimRecValue = document.querySelector('input[name="crimRec"]:checked')?.value;
-            const idDocs = document.querySelectorAll('input[name="idDoc"]:checked');
-            const validationMessage = document.getElementById('validationMessage');
-
-            // Validate form
-            if (!changeValue || !ageValue || !publicationValue || !famCourtValue || !govAssistValue || !crimRecValue || idDocs.length === 0) {
-                validationMessage.style.display = 'block';
-                setTimeout(() => {
-                    validationMessage.style.display = 'none';
-                }, 3000);
-                return;
-            }
-
-            // Add base court fees if name change is selected
+        if (doc.value === 'driver') {
             if (changeValue === 'name' || changeValue === 'both') {
-                if (govAssistValue === 'lowIncome') {
-                    addCost('Court Fees (Fee Waiver Eligible)', 0);
-                } else {
-                    addCost('Court Fees', costs.courtFees);
-                }
+                addCost('Driver License Name Change Fee', costs.driverFeesName);
             }
-
-            // Add fingerprinting cost if required
-            if (ageValue === 'yesBackground') {
-                addCost('Fingerprinting', costs.fingerprinting);
+            if (changeValue === 'gender' || changeValue === 'both') {
+                addCost('Driver License Gender Change Fee', costs.driverFeesGender);
             }
-
-            // Add costs for selected ID documents
-            idDocs.forEach(doc => {
-                if (doc.value === 'birthCert') {
-                    addCost('Birth Certificate Fee', costs.birthCertRegular);
-                }
-                if (doc.value === 'passport') {
-                    const passportRenewal = document.querySelector('input[name="passportRenewal"]:checked');
-                    if (passportRenewal && passportRenewal.value === 'morethan1') {
-                        addCost('Passport Fee', costs.passportRegular);
-                    }
-                }
-            });
+        }
+    });
 
             // Your existing instruction generation code starts here
             let instructions = '<h1 class="section-title">Legal ID Change Instructions</h1>';
