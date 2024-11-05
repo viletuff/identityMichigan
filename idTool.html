@@ -15,6 +15,7 @@
             --warning: #f59e0b;
             --accent: #e0e7ff;
             --secondary: #f0f7ff;
+            --success: #10b981;
         }
 
         body {
@@ -69,6 +70,54 @@
         .nav-link:hover {
             background-color: var(--accent);
             color: var(--primary);
+        }
+
+        /* Cost Summary Panel */
+        .cost-summary {
+            position: sticky;
+            top: 80px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border: 2px solid var(--accent);
+            z-index: 90;
+        }
+
+        .cost-summary h3 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .cost-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .cost-item:last-child {
+            border-bottom: none;
+        }
+
+        .total-cost {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--primary);
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            color: var(--primary);
+            font-size: 1.2rem;
         }
 
         /* Main Content */
@@ -130,8 +179,7 @@
             background: var(--accent);
             transform: translateX(4px);
         }
-
-        input[type="radio"],
+		input[type="radio"],
         input[type="checkbox"] {
             width: 1.2rem;
             height: 1.2rem;
@@ -174,7 +222,8 @@
             text-align: center;
             font-weight: 500;
         }
-		#results {
+
+        #results {
             margin-top: 3rem;
             background: white;
             padding: 2.5rem;
@@ -222,7 +271,17 @@
             color: #9a3412;
         }
 
-        .privacy-notice {
+        .price-tag {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+  .privacy-notice {
             background: white;
             padding: 2rem;
             border-radius: 16px;
@@ -319,9 +378,21 @@
     </nav>
 
     <div class="container">
-        <!-- Privacy Notice -->
+        <!-- Cost Summary Panel -->
+        <div class="cost-summary" id="costSummary" style="display: none;">
+            <h3>📊 Estimated Costs</h3>
+            <ul class="cost-list" id="costList">
+                <!-- Costs will be populated here -->
+            </ul>
+            <div class="total-cost">
+                <span>Total Estimated Cost:</span>
+                <span id="totalCost">$0.00</span>
+            </div>
+        </div>
+
+      <!-- Privacy Notice -->
         <div class="privacy-notice">
-            <h3>Privacy</h3>
+            <h3>Privacy Notice</h3>
             <p>All responses are kept local on your device and I have no way of being able to access them.</p>
       </div>
 
@@ -408,15 +479,55 @@
             </div>
 
 
-            <button onclick="generateInstructions()">Generate  Personalized Instructions</button>
+            <button onclick="generateInstructions()">Generate Your Personalized Instructions</button>
         </div>
 
         <div id="results"></div>
     </div>
     
-    <!-- Keep your existing JavaScript code unchanged -->
     <script>
-       function togglePassportQuestion() {
+         const costs = {
+            courtFees: 175,
+            fingerprinting: 43.25,
+            birthCertRegular: 50,
+            birthCertRush: 75,
+            passportRegular: 130,
+            passportExpedited: 190
+        };
+
+        const selectedCosts = new Map();
+
+        function addCost(description, amount) {
+            selectedCosts.set(description, amount);
+            updateCostSummary();
+        }
+
+        function removeCost(description) {
+            selectedCosts.delete(description);
+            updateCostSummary();
+        }
+
+        function updateCostSummary() {
+            const costList = document.getElementById('costList');
+            const totalCostElement = document.getElementById('totalCost');
+            const costSummary = document.getElementById('costSummary');
+            
+            costList.innerHTML = '';
+            let total = 0;
+
+            selectedCosts.forEach((amount, description) => {
+                const li = document.createElement('li');
+                li.className = 'cost-item';
+                li.innerHTML = `<span>${description}</span><span>$${amount.toFixed(2)}</span>`;
+                costList.appendChild(li);
+                total += amount;
+            });
+
+            totalCostElement.textContent = `$${total.toFixed(2)}`;
+            costSummary.style.display = selectedCosts.size > 0 ? 'block' : 'none';
+        }
+
+        function togglePassportQuestion() {
             const passportCheckbox = document.querySelector('input[name="idDoc"][value="passport"]');
             const passportQuestion = document.getElementById('passportQuestion');
             
@@ -424,43 +535,63 @@
                 passportQuestion.style.display = 'block';
             } else {
                 passportQuestion.style.display = 'none';
+                removeCost('Passport Fee');
             }
         }
-    
+
         function generateInstructions() {
-            // Get selected values from the form
-            const change = document.querySelector('input[name="change"]:checked');
-            const age = document.querySelector('input[name="age"]:checked');
-            const publication = document.querySelector('input[name="publication"]:checked');
-            const famCourt = document.querySelector('input[name="famCourt"]:checked');
-            const govAssist = document.querySelector('input[name="govAssist"]:checked');
-            const crimRec = document.querySelector('input[name="crimRec"]:checked');
+            // Clear previous costs
+            selectedCosts.clear();
+
+            // Get all form values
+            const changeValue = document.querySelector('input[name="change"]:checked')?.value;
+            const ageValue = document.querySelector('input[name="age"]:checked')?.value;
+            const publicationValue = document.querySelector('input[name="publication"]:checked')?.value;
+            const famCourtValue = document.querySelector('input[name="famCourt"]:checked')?.value;
+            const govAssistValue = document.querySelector('input[name="govAssist"]:checked')?.value;
+            const crimRecValue = document.querySelector('input[name="crimRec"]:checked')?.value;
             const idDocs = document.querySelectorAll('input[name="idDoc"]:checked');
             const validationMessage = document.getElementById('validationMessage');
-    
-            // Ensure all questions are answered
-            if (!change || !age || !publication || !famCourt || !govAssist || !crimRec || idDocs.length === 0) {
+
+            // Validate form
+            if (!changeValue || !ageValue || !publicationValue || !famCourtValue || !govAssistValue || !crimRecValue || idDocs.length === 0) {
                 validationMessage.style.display = 'block';
-                // Hide message after 3 seconds
                 setTimeout(() => {
                     validationMessage.style.display = 'none';
                 }, 3000);
                 return;
             }
-    
-            // Hide validation message if all is well
-            validationMessage.style.display = 'none';
-    
-            const changeValue = change.value;
-            const ageValue = age.value;
-            const publicationValue = publication.value;
-            const govAssistValue = govAssist.value;
-            const crimRecValue = crimRec.value;
-            const famCourtValue = famCourt.value;
-            
-            // Initialize instructions with main title
+
+            // Add base court fees if name change is selected
+            if (changeValue === 'name' || changeValue === 'both') {
+                if (govAssistValue === 'lowIncome') {
+                    addCost('Court Fees (Fee Waiver Eligible)', 0);
+                } else {
+                    addCost('Court Fees', costs.courtFees);
+                }
+            }
+
+            // Add fingerprinting cost if required
+            if (ageValue === 'yesBackground') {
+                addCost('Fingerprinting', costs.fingerprinting);
+            }
+
+            // Add costs for selected ID documents
+            idDocs.forEach(doc => {
+                if (doc.value === 'birthCert') {
+                    addCost('Birth Certificate Fee', costs.birthCertRegular);
+                }
+                if (doc.value === 'passport') {
+                    const passportRenewal = document.querySelector('input[name="passportRenewal"]:checked');
+                    if (passportRenewal && passportRenewal.value === 'morethan1') {
+                        addCost('Passport Fee', costs.passportRegular);
+                    }
+                }
+            });
+
+            // Your existing instruction generation code starts here
             let instructions = '<h1 class="section-title">Legal ID Change Instructions</h1>';
-    
+            
             // Previous Court History Section
             if (famCourtValue === 'yesFam') {
                 instructions += '<div class="instruction-section">';
@@ -650,13 +781,18 @@
         }
         
         // Display instructions on the page
-        document.getElementById('results').innerHTML = instructions;
-        
-        // Smooth scroll to results
-        document.getElementById('results').scrollIntoView({ 
-            behavior: 'smooth' 
+         document.getElementById('results').innerHTML = instructions;
+            
+            // Smooth scroll to results
+            document.getElementById('results').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        // Initialize cost summary on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCostSummary();
         });
-    }
     </script>
 </body>
 </html>
