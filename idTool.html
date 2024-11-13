@@ -442,378 +442,382 @@
     </div>
 <script>
      
+      // Constants and Core Functions
+const COSTS = {
+    courtFees: 175,
+    fingerprinting: 43.25,
+    birthCertRegular: 50,
+    birthCertRush: 75,
+    passportRegular: 175,
+    passportExpedited: 60,
+    driverFeesGender: 19,
+    driverFeesName: 19,
+    courtOrder: 20,
+    passportCard: 30,
+    executionFee: 35,
+    passportBook: 110
+};
+
+let selectedCosts = new Map();
+
+function addCost(description, amount) {
+    selectedCosts.set(description, amount);
+    updateCostSummary();
+}
+
+function removeCost(description) {
+    selectedCosts.delete(description);
+    updateCostSummary();
+}
+
+function updateCostSummary() {
+    const costList = document.getElementById('costList');
+    const totalCostElement = document.getElementById('totalCost');
+    const costSummary = document.getElementById('costSummary');
+    
+    costList.innerHTML = '';
+    let total = 0;
+
+    selectedCosts.forEach((amount, description) => {
+        const li = document.createElement('li');
+        li.className = 'cost-item';
+        li.innerHTML = `
+            <span>${description}</span>
+            <span>$${amount.toFixed(2)}</span>
+        `;
+        costList.appendChild(li);
+        total += amount;
+    });
+
+    totalCostElement.textContent = `$${total.toFixed(2)}`;
+    costSummary.style.display = selectedCosts.size > 0 ? 'block' : 'none';
+}
+
+function togglePassportQuestion() {
+    const passportCheckbox = document.querySelector('input[name="idDoc"][value="passport"]');
+    const passportQuestion = document.getElementById('passportQuestion');
+    
+    if (passportCheckbox.checked) {
+        passportQuestion.style.display = 'block';
+    } else {
+        passportQuestion.style.display = 'none';
+        const passportRadios = document.getElementsByName('passportRenewal');
+        passportRadios.forEach(radio => radio.checked = false);
+        removeCost('Passport Fee');
+        removeCost('Passport Execution Fee');
+        removeCost('Passport Card Fee');
+    }
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const passportCheckbox = document.querySelector('input[name="idDoc"][value="passport"]');
+    if (passportCheckbox) {
+        passportCheckbox.addEventListener('change', togglePassportQuestion);
+    }
+    updateCostSummary();
+});
+	function generateInstructions() {
+    selectedCosts.clear();
+
+    // Get all form values
+    const changeValue = document.querySelector('input[name="change"]:checked')?.value;
+    const ageValue = document.querySelector('input[name="age"]:checked')?.value;
+    const publicationValue = document.querySelector('input[name="publication"]:checked')?.value;
+    const famCourtValue = document.querySelector('input[name="famCourt"]:checked')?.value;
+    const govAssistValue = document.querySelector('input[name="govAssist"]:checked')?.value;
+    const crimRecValue = document.querySelector('input[name="crimRec"]:checked')?.value;
+    const idDocs = document.querySelectorAll('input[name="idDoc"]:checked');
+    const passportRenewal = document.querySelector('input[name="passportRenewal"]:checked')?.value;
+
+    // Validate form
+    if (!changeValue || !ageValue || !publicationValue || !famCourtValue || !govAssistValue || !crimRecValue || idDocs.length === 0) {
+        document.getElementById('validationMessage').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('validationMessage').style.display = 'none';
+        }, 3000);
+        return;
+    }
+
+    // Calculate initial costs
+    if (changeValue === 'name' || changeValue === 'both') {
+        if (govAssistValue === 'lowIncome') {
+            addCost('Court Fees (Fee Waiver May Be Available)', COSTS.courtFees);
+        } else {
+            addCost('Court Fees', COSTS.courtFees);
+        }
+    }
+
+    if (ageValue === 'yesBackground') {
+        if (govAssistValue === 'lowIncome') {
+            addCost('Fingerprinting (Fee Waiver May Be Available)', COSTS.fingerprinting);
+        } else {
+            addCost('Fingerprinting', COSTS.fingerprinting);
+        }
+    }
+
+    // Add document-specific costs
+    idDocs.forEach(doc => {
+        const docValue = doc.value;
         
-        const COSTS = {
-            courtFees: 175,
-            fingerprinting: 43.25,
-            birthCertRegular: 50,
-            birthCertRush: 75,
-            passportRegular: 0,
-            passportExpedited: 60,
-            driverFeesGender: 19,
-            driverFeesName: 19,
-            courtOrder: 20
-        };
-
-        let selectedCosts = new Map();
-
-        function addCost(description, amount) {
-            selectedCosts.set(description, amount);
-            updateCostSummary();
+        if (docValue === 'birthCert') {
+            addCost('Birth Certificate Processing', COSTS.birthCertRegular);
         }
-
-        function removeCost(description) {
-            selectedCosts.delete(description);
-            updateCostSummary();
+        
+        if (docValue === 'passport' && passportRenewal === 'morethan1') {
+            addCost('Passport Book', COSTS.passportBook);
+            addCost('Passport Execution Fee', COSTS.executionFee);
+            addCost('Passport Card (Optional)', COSTS.passportCard);
         }
-
-        function updateCostSummary() {
-            const costList = document.getElementById('costList');
-            const totalCostElement = document.getElementById('totalCost');
-            const costSummary = document.getElementById('costSummary');
-            
-            costList.innerHTML = '';
-            let total = 0;
-
-            selectedCosts.forEach((amount, description) => {
-                const li = document.createElement('li');
-                li.className = 'cost-item';
-                li.innerHTML = `
-                    <span>${description}</span>
-                    <span>$${amount.toFixed(2)}</span>
-                `;
-                costList.appendChild(li);
-                total += amount;
-            });
-
-            totalCostElement.textContent = `$${total.toFixed(2)}`;
-            costSummary.style.display = selectedCosts.size > 0 ? 'block' : 'none';
-        }
-
-        function togglePassportQuestion() {
-            const passportCheckbox = document.querySelector('input[name="idDoc"][value="passport"]');
-            const passportQuestion = document.getElementById('passportQuestion');
-            
-            if (passportCheckbox.checked) {
-                passportQuestion.style.display = 'block';
-            } else {
-                passportQuestion.style.display = 'none';
-                const passportRadios = document.getElementsByName('passportRenewal');
-                passportRadios.forEach(radio => radio.checked = false);
-                removeCost('Passport Fee');
+        
+        if (docValue === 'driver') {
+            if (changeValue === 'name' || changeValue === 'both') {
+                addCost('Driver License Name Change', COSTS.driverFeesName);
+            }
+            if (changeValue === 'gender' || changeValue === 'both') {
+                addCost('Driver License Gender Change', COSTS.driverFeesGender);
             }
         }
+    });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const passportCheckbox = document.querySelector('input[name="idDoc"][value="passport"]');
-            if (passportCheckbox) {
-                passportCheckbox.addEventListener('change', togglePassportQuestion);
+    // Start generating instructions
+    let instructions = [];
+    instructions.push('<h1 class="section-title">Legal ID Change Instructions</h1>');
+
+    // Previous Court History Section
+    if (famCourtValue === 'yesFam') {
+        instructions.push(`
+            <div class="instruction-section">
+                <h2 class="section-title">Previous Court History</h2>
+                <div class="warning-note">
+                    <p>You indicated that you have previous family court history. This may affect your case in the following ways:</p>
+                    <ul>
+                        <li>You will need to provide information about your previous court cases on your petition</li>
+                        <li>The judge may request records from your previous cases</li>
+                        <li>Processing time might be longer than usual</li>
+                    </ul>
+                    <p>It is recommended to:</p>
+                    <ul>
+                        <li>Gather documentation from your previous court cases</li>
+                        <li>Consider consulting with a legal aid organization for guidance</li>
+                    </ul>
+                </div>
+            </div>
+        `);
+    }
+
+    // Criminal Record Section
+    if (crimRecValue !== 'noCrim') {
+        let criminalContent = `
+            <div class="instruction-section">
+                <h2 class="section-title">Criminal Record Considerations</h2>
+                <div class="warning-note">`;
+        
+        if (crimRecValue === 'misdemeanor') {
+            criminalContent += `
+                <p>You indicated that you have a misdemeanor record. Please note:</p>
+                <ul>
+                    <li>Any Criminal Record can drastically complicate the process, if under the age of 22 this shouldn't show up because you aren't required to have a background check</li>
+                    <li>Having a criminal record (even if expunged) puts a presumption of changing your name for fraudulent intent</li>
+                    <li>I would recommend talking to an attorney or someone who has gone through the process in your County to know what the burden of proof is and how difficult it is</li>
+                    <li>I'm very sorry about the current state of things in America, I wish you luck ❤</li>
+                </ul>`;
+        } else if (crimRecValue === 'felony') {
+            criminalContent += `
+                <p>You indicated that you have a felony record. Important considerations:</p>
+                <ul>
+                    <li>Felony convictions can significantly impact name change petitions</li>
+                    <li>Depending on jurisdiction, felonies may prevent you from getting your legal name change</li>
+                    <li>There is a presumption that you are changing your name for fraudulent reasons and you have to show evidence that you are not doing so for fraudulent reasons</li>
+                    <li>I highly recommend hiring an attorney or going through an organization like <a href="https://grtransfoundation.org/update-program/" target="_blank">GR Trans Foundation</a></li>
+                    <li>I'm very sorry about the current state of things in America, I wish you luck ❤</li>
+                </ul>`;
+        }
+        
+        criminalContent += `
+                </div>
+            </div>`;
+        instructions.push(criminalContent);
+    }
+	// Name Change Section
+    if (changeValue === 'name' || changeValue === 'both') {
+        let nameChangeContent = `
+            <div class="instruction-section">
+                <h2 class="section-title">Name Change Process</h2>
+                <ol class="instruction-list">`;
+        
+        if (publicationValue === 'NoPub') {
+            nameChangeContent += `
+                <li>Print and fill out Non-Publication and Ex-Parte Request Petition for Name Change form <a href="https://www.courts.michigan.gov/49b1e6/siteassets/forms/scao-approved/pc51c.pdf" target="_blank">PC51c</a></li>
+                <li>On page 3, fill reason for not wanting to publish. Michigan Legal Help suggests "Public notice of this proceeding would reveal to the public that I am a transgender person. Transgender individuals often face pervasive discrimination in multiple parts of their lives, including in employment and housing. Data from the 2015 U.S. Transgender Survey shows that nationally, 19% of transgender people reported being fired, not hired, or denied a promotion in the past year because they were transgender. 23% indicated they experienced housing discrimination in the past year (2015 U.S. Transgender Survey). I request that you keep this name change proceedings confidential to avoid public disclosure of transgender status which I fear, and the data shows, would likely result in me experiencing discrimination and harassment." Note that this it is not a guarantee and ultimately it is up to the judge and if they feel like being a jerk.</li>`;
+        } else {
+            nameChangeContent += `
+                <li>Print and fill out Petition for Name Change form <a href="https://www.courts.michigan.gov/49b1e4/siteassets/forms/scao-approved/pc51.pdf" target="_blank">PC51</a></li>
+                <li>Ensure that at least 2 weeks before the court date that you publish your name in a newspaper's affidavit. This can range in price depending on if you want it to be private (law journals) or if in a more public newspaper. I'd recommend asking the Family Court or Police Department how long the expected wait time is for the background check.</li>`;
+        }
+        
+        nameChangeContent += `
+            <li>File with the Family Court you are a current resident in. If unsure where the Family Court is located, call them or County Clerk</li>`;
+        
+        if (govAssistValue === 'lowIncome') {
+            nameChangeContent += `
+                <div class="instruction-note">If low income you may qualify for <a href="https://www.courts.michigan.gov/4a302d/siteassets/forms/scao-approved/mc20.pdf" target="_blank">a publication fee waiver</a>.</div>
+                <div class="instruction-note">If Publication Fee waived, the court is required to pay the publication fee (this is a recent change of ruling, so the judge may not know about this)</div>`;
+        }
+        
+        nameChangeContent += `
+            <li>Once received letter in mail approving Petition for Name Change (1-2 weeks typically), call Family Court to set court date. This can vary largely depending on County, can range from 1 week to 4 months. At this point, you should get your background check and publication as soon as possible to ensure enough time.</li>
+            </ol>
+            </div>`;
+        instructions.push(nameChangeContent);
+    }
+
+    // Document Updates Section
+    if (idDocs && idDocs.length > 0) {
+        let documentsContent = `
+            <div class="instruction-section">
+                <h2 class="section-title">Document Updates</h2>`;
+
+        idDocs.forEach(doc => {
+            const docValue = doc.value;
+
+            if (docValue === 'socialSec') {
+                documentsContent += `
+                    <h3 class="subsection-title">Social Security Card</h3>
+                    <ol class="instruction-list">
+                        <li>Fill form <a href="https://www.ssa.gov/forms/ss-5fs.pdf" target="_blank">SS-5</a> (no cost)</li>
+                        <li>Mail to your local Social Security office (address can be found online)</li>
+                    </ol>`;
             }
-            updateCostSummary();
+
+            if (docValue === 'driver') {
+                documentsContent += `
+                    <h3 class="subsection-title">Driver's License</h3>
+                    <ol class="instruction-list">`;
+                
+                if (changeValue === 'gender' || changeValue === 'both') {
+                    documentsContent += `
+                        <li>Fill out <a href="https://www.michigan.gov/-/media/Project/Websites/sos/34lawens/MDOS_Sex_designation_form.pdf" target="_blank">Secretary of State Sex Designation Form</a></li>`;
+                }
+                
+                if (changeValue === 'name' || changeValue === 'both') {
+                    documentsContent += `
+                        <li>Set appointment with local Secretary of State, this <a href="https://www.michigan.gov/sos/faqs/resources/scheduling-an-office-visit" target="_blank">can be done online</a></li>
+                        <li>Bring 1 copy of Court Order verifying name change</li>`;
+                }
+                
+                documentsContent += `</ol>`;
+            }
+
+            if (docValue === 'birthCert') {
+                documentsContent += `
+                    <h3 class="subsection-title">Birth Certificate</h3>
+                    <ol class="instruction-list">`;
+                    
+                if (changeValue === 'name' || changeValue === 'both') {
+                    documentsContent += `
+                        <li>Fill out <a href="https://www.michigan.gov/mdhhs/-/media/Project/Websites/mdhhs/Folder1/Folder3/DCH-0847-CHGBX.pdf" target="_blank">Application to Change or Correct Michigan Birth Certificate</a></li>
+                        <li>Include 1 copy of Court Order in envelope</li>`;
+                }
+                
+                if (changeValue === 'gender' || changeValue === 'both') {
+                    documentsContent += `
+                        <li>Fill out <a href="https://www.michigan.gov/-/media/Project/Websites/mdhhs/Folder3/Folder17/Folder217/Sex_Designation_Application.pdf" target="_blank">Michigan Sex Designation Form</a></li>`;
+                }
+                
+                documentsContent += `
+                    <li>Include SCANNED COPY of Driver's License or State ID in envelope. They WILL NOT return any original copies of documents, including an original ID document and a Court Order</li>
+                    <li>Include processing fee in envelope: $50 for regular, $75 for RUSH shipping</li>
+                    <div class="instruction-note">If affordable, RUSH shipping is highly recommended. Vital Records is notoriously not good at this process (they lost the 2nd page of my STAPLED Court Order). Having RUSH shipping can DRASTICALLY lower slow downs (can be up to 4 months if regular shipping)</div>
+                    <li>Mail to appropriate address:<br>
+                        For Regular shipping:<br>
+                        Vital Records Changes<br>
+                        P.O. Box 30721<br>
+                        Lansing, MI 48909<br><br>
+                        For RUSH shipping:<br>
+                        Vital Records Changes RUSH<br>
+                        P.O. Box 30721<br>
+                        Lansing, MI 48909</li>
+                    </ol>`;
+            }
+
+            if (docValue === 'passport') {
+                documentsContent += `
+                    <h3 class="subsection-title">Passport</h3>
+                    <div class="instruction-note">
+                        Note: these fees can be complicated and vary. Please check the 
+                        <a href="https://travel.state.gov/content/travel/en/passports/how-apply/fees.html" target="_blank">
+                            Federal Government's website
+                        </a> for current fees before submitting your application.
+                    </div>`;
+                
+                const passportRenewal = document.querySelector('input[name="passportRenewal"]:checked');
+                
+                if (passportRenewal) {
+                    const renewalValue = passportRenewal.value;
+                    
+                    if (renewalValue === 'lessThan1' && (changeValue === 'name' || changeValue === 'both')) {
+                        documentsContent += `
+                            <h4>Less than 1 Year Since Last Passport</h4>
+                            <ol class="instruction-list">
+                                <li>Fill out Form <a href="https://pptform.state.gov/" target="_blank">DS-5504</a></li>
+                                <li>Required documents to submit by mail:
+                                    <ul>
+                                        <li>Your most recent passport</li>
+                                        <li>Original or certified court order showing name change (must be less than one year old)</li>
+                                        <li><a href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html" target="_blank">Recent passport photo</a></li>
+                                    </ul>
+                                </li>
+                                <div class="instruction-note">Fees: $35 execution fee, $130 for passport book, $30 for passport card</div>
+                            </ol>`;
+                    } else if (renewalValue === 'morethan1' && (changeValue === 'name' || changeValue === 'both')) {
+                        documentsContent += `
+                            <h4>More than 1 Year Since Last Passport</h4>
+                            <ol class="instruction-list">
+                                <li>Fill out Form DS-82 (<a href="https://pptform.state.gov/" target="_blank">Get form here</a>)</li>
+                                <li>Required documents to submit:
+                                    <ul>
+                                        <li>Completed DS-82 form</li>
+                                        <li>1 copy of your court order</li>
+                                        <li><a href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html" target="_blank">Recent passport photo</a></li>
+                                        <li>Current passport</li>
+                                    </ul>
+                                </li>
+                                <li>Mail using USPS, UPS, FedEx, or DHL</li>
+                                <div class="instruction-note">Fees: $35 execution fee, $130 for passport book, $30 for passport card</div>
+                            </ol>`;
+                    } else if (renewalValue === 'morethan1' && changeValue === 'gender') {
+                        documentsContent += `
+                            <h4>Gender Marker Change</h4>
+                            <ol class="instruction-list">
+                                <li>Fill out Form DS-11 (<a href="https://eforms.state.gov/Forms/ds11.PDF" target="_blank">Get form here</a>)</li>
+                                <li>Required documents to submit:
+                                    <ul>
+                                        <li><a href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html" target="_blank">Recent passport photo</a></li>
+                                        <li>Current passport</li>
+                                        <li>A Legal ID that represents your current appearance</li>
+                                        <li>Proof of Citizenship</li>
+                                    </ul>
+                                </li>
+                                <li>Mail using USPS, UPS, FedEx, or DHL</li>
+                                <div class="instruction-note">Fees: $35 execution fee, $130 for passport book, $30 for passport card (optional)</div>
+                            </ol>`;
+                    }
+                }
+            }
         });
 
-        function generateInstructions() {
-            selectedCosts.clear();
+        documentsContent += '</div>';
+        instructions.push(documentsContent);
+    }
 
-            const changeValue = document.querySelector('input[name="change"]:checked')?.value;
-            const ageValue = document.querySelector('input[name="age"]:checked')?.value;
-            const publicationValue = document.querySelector('input[name="publication"]:checked')?.value;
-            const famCourtValue = document.querySelector('input[name="famCourt"]:checked')?.value;
-            const govAssistValue = document.querySelector('input[name="govAssist"]:checked')?.value;
-            const crimRecValue = document.querySelector('input[name="crimRec"]:checked')?.value;
-            const idDocs = document.querySelectorAll('input[name="idDoc"]:checked');
+    // Display results and scroll
+    document.getElementById('results').innerHTML = instructions.join('');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    updateCostSummary();
+}
 
-            if (!changeValue || !ageValue || !publicationValue || !famCourtValue || !govAssistValue || !crimRecValue || idDocs.length === 0) {
-                document.getElementById('validationMessage').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('validationMessage').style.display = 'none';
-                }, 3000);
-                return;
-            }
-			// Add costs based on selections
-            if (changeValue === 'name' || changeValue === 'both') {
-                if (govAssistValue === 'lowIncome') {
-                    addCost('Court Fees (Fee Waiver May Be Available)', COSTS.courtFees);
-                } else {
-                    addCost('Court Fees', COSTS.courtFees);
-                }
-            }
-
-            if (ageValue === 'yesBackground') {
-                if (govAssistValue === 'lowIncome') {
-                    addCost('Fingerprinting (Fee Waiver May Be Available)', COSTS.fingerprinting);
-                } else {
-                    addCost('Fingerprinting', COSTS.fingerprinting);
-                }
-            }
-
-            let instructions = [];
-            instructions.push('<h1 class="section-title">Legal ID Change Instructions</h1>');
-
-            // Previous Court History Section
-            if (famCourtValue === 'yesFam') {
-                instructions.push(`
-                    <div class="instruction-section">
-                        <h2 class="section-title">Previous Court History</h2>
-                        <div class="warning-note">
-                            <p>You indicated that you have previous family court history. This may affect your case in the following ways:</p>
-                            <ul>
-                                <li>You will need to provide information about your previous court cases on your petition</li>
-                                <li>The judge may request records from your previous cases</li>
-                                <li>Processing time might be longer than usual</li>
-                            </ul>
-                            <p>It is recommended to:</p>
-                            <ul>
-                                <li>Gather documentation from your previous court cases</li>
-                                <li>Consider consulting with a legal aid organization for guidance</li>
-                            </ul>
-                        </div>
-                    </div>
-                `);
-            }
-
-            // Criminal Record Section
-            if (crimRecValue !== 'noCrim') {
-                let criminalContent = `
-                    <div class="instruction-section">
-                        <h2 class="section-title">Criminal Record Considerations</h2>
-                        <div class="warning-note">`;
-                
-                if (crimRecValue === 'misdemeanor') {
-                    criminalContent += `
-                            <p>You indicated that you have a misdemeanor record. Please note:</p>
-                            <ul>
-                                <li>Any Criminal Record can drastically complicate the process, if under the age of 22 this shouldn't show up because you aren't required to have a background check</li>
-                                <li>Having a criminal record (even if expunged) puts a presumption of changing your name for fraudulent intent</li>
-                                <li>I would recommend talking to an attorney or someone who has gone through the process in your County to know what the burden of proof is and how difficult it is</li>
-                                <li>I'm very sorry about the current state of things in America, I wish you luck ❤</li>
-                            </ul>`;
-                } else if (crimRecValue === 'felony') {
-                    criminalContent += `
-                            <p>You indicated that you have a felony record. Important considerations:</p>
-                            <ul>
-                                <li>Felony convictions can significantly impact name change petitions</li>
-                                <li>Depending on jurisdiction, felonies may prevent you from getting your legal name change</li>
-                                <li>There is a presumption that you are changing your name for fraudulent reasons and you have to show evidence that you are not doing so for fraudulent reasons</li>
-                                <li>I highly recommend hiring an attorney or going through an organization like <a href="https://grtransfoundation.org/update-program/" target="_blank">GR Trans Foundation</a></li>
-                                <li>I'm very sorry about the current state of things in America, I wish you luck ❤</li>
-                            </ul>`;
-                }
-                
-                criminalContent += `
-                        </div>
-                    </div>`;
-                instructions.push(criminalContent);
-            }
-
-            // Name Change Section
-            if (changeValue === 'name' || changeValue === 'both') {
-                let nameChangeContent = `
-                    <div class="instruction-section">
-                        <h2 class="section-title">Name Change Process</h2>
-                        <ol class="instruction-list">`;
-                
-                if (publicationValue === 'NoPub') {
-                    nameChangeContent += `
-                            <li>Print and fill out Non-Publication and Ex-Parte Request Petition for Name Change form <a href="https://www.courts.michigan.gov/49b1e6/siteassets/forms/scao-approved/pc51c.pdf" target="_blank">PC51c</a></li>
-                            <li>On page 3, fill reason for not wanting to publish. Michigan Legal Help suggests "Public notice of this proceeding would reveal to the public that I am a transgender person. Transgender individuals often face pervasive discrimination in multiple parts of their lives, including in employment and housing. Data from the 2015 U.S. Transgender Survey shows that nationally, 19% of transgender people reported being fired, not hired, or denied a promotion in the past year because they were transgender. 23% indicated they experienced housing discrimination in the past year (2015 U.S. Transgender Survey). I request that you keep this name change proceedings confidential to avoid public disclosure of transgender status which I fear, and the data shows, would likely result in me experiencing discrimination and harassment." Note that this it is not a guarantee and ultimately it is up to the judge and if they feel like being a jerk.</li>`;
-                } else {
-                    nameChangeContent += `
-                            <li>Print and fill out Petition for Name Change form <a href="https://www.courts.michigan.gov/49b1e4/siteassets/forms/scao-approved/pc51.pdf" target="_blank">PC51</a></li>
-                            <li>Ensure that at least 2 weeks before the court date that you publish your name in a newspaper's affidavit. This can range in price depending on if you want it to be private (law journals) or if in a more public newspaper. I'd recommend asking the Family Court or Police Department how long the expected wait time is for the background check.</li>`;
-                }
-                
-                nameChangeContent += `
-                            <li>File with the Family Court you are a current resident in. If unsure where the Family Court is located, call them or County Clerk</li>`;
-                
-                if (govAssistValue === 'lowIncome') {
-                    nameChangeContent += `
-                            <div class="instruction-note">If low income you may qualify for <a href="https://www.courts.michigan.gov/4a302d/siteassets/forms/scao-approved/mc20.pdf" target="_blank">a publication fee waiver</a>.</div>
-                            <div class="instruction-note">If Publication Fee waived, the court is required to pay the publication fee (this is a recent change of ruling, so the judge may not know about this)</div>`;
-                }
-                
-                nameChangeContent += `
-                            <li>Once received letter in mail approving Petition for Name Change (1-2 weeks typically), call Family Court to set court date. This can vary largely depending on County, can range from 1 week to 4 months. At this point, you should get your background check and publication as soon as possible to ensure enough time.</li>
-                        </ol>
-                    </div>`;
-                instructions.push(nameChangeContent);
-            }
-			// Background Check Section
-            if (ageValue === 'yesBackground') {
-                instructions.push(`
-                    <div class="instruction-section">
-                        <h2 class="section-title">Background Check Requirements</h2>
-                        <ol class="instruction-list">
-                            <li>Go to local police station and say you need your fingerprints done for a background check, say you want it on your state card (RI-008 card)</li>
-                            <li>They will then take you to get your fingerprints taken, make sure to disclose any previous criminal record or previous legal name(s)</li>
-                            <li>You will not see the results of your criminal background check, they will be sent directly to the court</li>
-                        </ol>
-                    </div>`);
-            }
-
-            // Court Hearing Section
-            if (changeValue === 'name' || changeValue === 'both') {
-                let hearingContent = `
-                    <div class="instruction-section">
-                        <h2 class="section-title">Court Hearing Information</h2>
-                        <ol class="instruction-list">
-                            <li>The court hearing is usually done online via Zoom. It should be fairly straight forward and less than 10 minutes overall (most of mine was spelling out my name). Unfortunately many judges will ask invasive questions about your gender journey; it depends on the judge and how ignorant they are, for the most part you can say generic answers. I would recommend practicing before the hearing to ensure you're emotionally safe and confident in what you're saying</li>`;
-
-                if ((changeValue === 'name' || changeValue === 'both') && ageValue === 'yesBackground') {
-                    hearingContent += `
-                            <li>Ensure to state any previous criminal record, even if expunged. It's better to be safe than sorry with this stuff since there's no way of knowing what came up</li>`;
-                }
-
-                if ((changeValue === 'both' || changeValue === 'name') && ageValue === 'minor') {
-                    hearingContent += `
-                            <li>If this is a Minor who is 14 or older, they'll be asked to sign the <a href="https://www.courts.michigan.gov/49d2cd/siteassets/forms/scao-approved/pc51b.pdf" target="_blank">Minor's Consent to Name Change Form PC 51 B</a> in the presence of the Court Register, and then mail that into the Kent County Probate Court before any official documents are mailed to the petitioner</li>`;
-                }
-
-                hearingContent += `
-                        </ol>
-                    </div>`;
-                instructions.push(hearingContent);
-            }
-
-            // Document Updates Section
-            if (idDocs && idDocs.length > 0) {
-                let documentsContent = `
-                    <div class="instruction-section">
-                        <h2 class="section-title">Document Updates</h2>`;
-
-                idDocs.forEach(doc => {
-                    const docValue = doc.value;
-
-                    // Social Security Card Instructions
-                    if (docValue === 'socialSec') {
-                        documentsContent += `
-                            <h3 class="subsection-title">Social Security Card</h3>
-                            <ol class="instruction-list">
-                                <li>Fill form <a href="https://www.ssa.gov/forms/ss-5fs.pdf" target="_blank">SS-5</a> (no cost)</li>
-                                <li>Mail to your local Social Security office (address can be found online)</li>
-                            </ol>`;
-                    }
-
-                    // Driver's License Instructions
-                    if (docValue === 'driver') {
-                        documentsContent += `
-                            <h3 class="subsection-title">Driver's License</h3>
-                            <ol class="instruction-list">`;
-                        
-                        if (changeValue === 'gender' || changeValue === 'both') {
-                            documentsContent += `
-                                <li>Fill out <a href="https://www.michigan.gov/-/media/Project/Websites/sos/34lawens/MDOS_Sex_designation_form.pdf" target="_blank">Secretary of State Sex Designation Form</a></li>`;
-                        }
-                        
-                        if (changeValue === 'name' || changeValue === 'both') {
-                            documentsContent += `
-                                <li>Set appointment with local Secretary of State, this <a href="https://www.michigan.gov/sos/faqs/resources/scheduling-an-office-visit" target="_blank">can be done online</a></li>
-                                <li>Bring 1 copy of Court Order verifying name change</li>`;
-                        }
-                        
-                        documentsContent += `
-                            </ol>`;
-                    }
-
-                    // Birth Certificate Instructions
-                    if (docValue === 'birthCert') {
-                        documentsContent += `
-                            <h3 class="subsection-title">Birth Certificate</h3>
-                            <ol class="instruction-list">`;
-                            
-                        if (changeValue === 'name' || changeValue === 'both') {
-                            documentsContent += `
-                                <li>Fill out <a href="https://www.michigan.gov/mdhhs/-/media/Project/Websites/mdhhs/Folder1/Folder3/DCH-0847-CHGBX.pdf" target="_blank">Application to Change or Correct Michigan Birth Certificate</a></li>
-                                <li>Include 1 copy of Court Order in envelope</li>`;
-                        }
-                        
-                        if (changeValue === 'gender' || changeValue === 'both') {
-                            documentsContent += `
-                                <li>Fill out <a href="https://www.michigan.gov/-/media/Project/Websites/mdhhs/Folder3/Folder17/Folder217/Sex_Designation_Application.pdf" target="_blank">Michigan Sex Designation Form</a></li>`;
-                        }
-                        
-                        documentsContent += `
-                                <li>Include SCANNED COPY of Driver's License or State ID in envelope. They WILL NOT return any original copies of documents, including an original ID document and a Court Order</li>
-                                <li>Include processing fee in envelope: $50 for regular, $75 for RUSH shipping</li>
-                                <div class="instruction-note">If affordable, RUSH shipping is highly recommended. Vital Records is notoriously not good at this process (they lost the 2nd page of my STAPLED Court Order). Having RUSH shipping can DRASTICALLY lower slow downs (can be up to 4 months if regular shipping)</div>
-                                <li>Mail to appropriate address:<br>
-                                    For Regular shipping:<br>
-                                    Vital Records Changes<br>
-                                    P.O. Box 30721<br>
-                                    Lansing, MI 48909<br><br>
-                                    For RUSH shipping:<br>
-                                    Vital Records Changes RUSH<br>
-                                    P.O. Box 30721<br>
-                                    Lansing, MI 48909</li>
-                            </ol>`;
-                    }
-
-                    // Passport Instructions
-                    if (docValue === 'passport') {
-                        documentsContent += '<h3 class="subsection-title">Passport</h3>';
-                        const passportRenewal = document.querySelector('input[name="passportRenewal"]:checked');
-                        
-                        if (passportRenewal) {
-                            const renewalValue = passportRenewal.value;
-                            
-                            if (renewalValue === 'lessThan1' && (changeValue === 'name' || changeValue === 'both')) {
-                                documentsContent += `
-                                    <h4>Less than 1 Year Since Last Passport</h4>
-                                    <ol class="instruction-list">
-                                        <li>Fill out Form <a href="https://pptform.state.gov/" target="_blank">DS-5504</a></li>
-                                        <li>Required documents to submit by mail:
-                                            <ul>
-                                                <li>Your most recent passport</li>
-                                                <li>Original or certified court order showing name change (must be less than one year old)</li>
-                                                <li><a href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html" target="_blank">Recent passport photo</a></li>
-                                            </ul>
-                                        </li>
-                                        <div class="instruction-note">No fee required unless requesting expedited service ($60)</div>
-                                    </ol>`;
-                            } else if (renewalValue === 'morethan1' && (changeValue === 'name' || changeValue === 'both')) {
-                                documentsContent += `
-                                    <h4>More than 1 Year Since Last Passport</h4>
-                                    <ol class="instruction-list">
-                                        <li>Fill out Form DS-82 (<a href="https://pptform.state.gov/" target="_blank">Get form here</a>)</li>
-                                        <li>Required documents to submit:
-                                            <ul>
-                                                <li>Completed DS-82 form</li>
-                                                <li>1 copy of your court order</li>
-                                                <li><a href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html" target="_blank">Recent passport photo</a></li>
-                                                <li>Current passport</li>
-                                            </ul>
-                                        </li>
-                                        <li>Mail using USPS, UPS, FedEx, or DHL</li>
-                                    </ol>`;
-                            } else if (renewalValue === 'morethan1' && changeValue === 'gender') {
-                                documentsContent += `
-                                    <h4>More Than 1 year Since Last Passport</h4>
-                                    <ol class="instruction-list">
-                                        <li>Fill out Form DS-11 (<a href="https://eforms.state.gov/Forms/ds11.PDF" target="_blank">Get form here</a>), unfortunately the only available Gender Options are M or F, X has not been implemented yet</li>
-                                        <li>Required documents to submit:
-                                            <ul>
-                                                <li><a href="https://travel.state.gov/content/travel/en/passports/how-apply/photos.html" target="_blank">Recent passport photo</a></li>
-                                                <li>Current passport</li>
-                                                <li>A Legal ID that represents your current appearance</li>
-                                                <li>Proof of Citizenship</li>
-                                            </ul>
-                                        </li>
-                                        <li>Mail using USPS, UPS, FedEx, or DHL</li>
-                                    </ol>`;
-                            }
-                        }
-                    }
-                });
-
-                documentsContent += '</div>';
-                instructions.push(documentsContent);
-            }
-
-            // Display results and scroll
-            document.getElementById('results').innerHTML = instructions.join('');
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-            updateCostSummary();
-        }
+// Add missing part of the closing curly brace for generateInstructions function
     </script>
 
 </body>
