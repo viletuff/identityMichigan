@@ -450,8 +450,7 @@ const COSTS = {
     birthCertRush: 75,
     passportRegular: 175,
     passportExpedited: 60,
-    driverFeesGender: 19,
-    driverFeesName: 19,
+    driverFees: 19,
     courtOrder: 20,
     passportCard: 30,
     executionFee: 35,
@@ -572,10 +571,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (docValue === 'driver') {
             if (changeValue === 'name' || changeValue === 'both') {
-                addCost('Driver License Name Change', COSTS.driverFeesName);
+                addCost('Driver License', COSTS.driverFees);
             }
-            if (changeValue === 'gender' || changeValue === 'both') {
-                addCost('Driver License Gender Change', COSTS.driverFeesGender);
             }
         }
     });
