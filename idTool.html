@@ -547,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (ageValue === 'yesBackground') {
+    if (ageValue === 'yesBackground' && changeValue === 'name') {
         if (govAssistValue === 'lowIncome') {
             addCost('Fingerprinting (Fee Waiver May Be Available)', COSTS.fingerprinting);
         } else {
@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (docValue === 'driver') {
-            if (changeValue === 'name' || changeValue === 'both') {
+            if (changeValue === 'name' || changeValue === 'both' || changeValue === 'gender') {
                 addCost('Driver License', COSTS.driverFees);
             }
         }
