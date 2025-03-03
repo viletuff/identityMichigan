@@ -123,13 +123,14 @@ function generateInstructions() {
                     driver: 19, // Driver's License
                     birthCert: 50, // Birth Certificate
                     socialSec: 0, // Social Security Card (usually free)
-                 	passportCard: 30, //passport card
+                 	passportCard: 30,
+                 	passportBook: 110,  //passport card
                     courtFees: 175, // Court Fees
                     fingerPrint: 15, //finger Printing
                     backgroundCheck: 43.25, // Fingerprinting
                     executionFee: 35, // Passport Execution Fee
                     courtOrder: 20, // Court Order
-                    birthCertExp: 75, // Birth Certificate Expedited
+                    birthCertExp: 25, // Birth Certificate Expedited
                     petitionFee: 175, //PC 51
                 }
                 
