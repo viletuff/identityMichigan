@@ -3,221 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal ID Tool</title>
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-    <style>
-        /* Global styles */
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #f0f7ff;
-            --accent: #e0e7ff;
-            --text: #1e293b;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            min-height: 100vh;
-        }
-
-        /* Navigation styles */
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.25rem 2rem;
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-logo {
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: var(--primary);
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text);
-            padding: 0.75rem 1.5rem;
-            transition: all 0.2s ease;
-            font-weight: 600;
-            border-radius: 8px;
-        }
-
-        .nav-link:hover {
-            background-color: var(--accent);
-            color: var(--primary);
-        }
-
-        /* Main content styles */
-        .main {
-            max-width: 1000px;
-            margin: 3rem auto;
-            padding: 0 2rem;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            font-weight: 800;
-            line-height: 1.2;
-            text-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
-        }
-
-        .subtitle {
-            font-size: 1.25rem;
-            color: #64748b;
-            margin-bottom: 3rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 1.25rem 2.5rem;
-            background-color: var(--primary);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin: 2rem 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
-        }
-
-        .cta-button:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(99, 102, 241, 0.3);
-        }
-
-        /* Info Panel styles */
-        .info-panel {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin: 3rem 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: left;
-            border: 2px solid var(--accent);
-            transition: transform 0.3s ease;
-        }
-
-        .info-panel:hover {
-            transform: translateY(-4px);
-        }
-
-        .info-panel h2 {
-            color: var(--primary);
-            margin-top: 0;
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-    
-        .info-panel p {
-            color: #4b5563;
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .info-panel a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            background-color: var(--secondary);
-            border-radius: 8px;
-            display: inline-block;
-            transition: all 0.2s ease;
-        }
-
-        .info-panel a:hover {
-            background-color: var(--accent);
-            transform: translateX(4px);
-        }
-
-        /* Card Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: left;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--accent);
-        }
-
-        .feature-card h3 {
-            color: var(--primary);
-            margin-top: 0;
-            font-size: 1.25rem;
-        }
-
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .main {
-                padding: 0 1rem;
-            }
-
-            .info-panel {
-                padding: 1.5rem;
-            }
-        }
-    </style>
+    <title>Identity Michigan</title>
+    <link rel="stylesheet" href="styling.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="nav-container">
-        <a href="index.html" class="nav-link">Home</a>
-</div>
-
-    <div class="main" role="main">
-        <h1>Please Share with Friends Who Need This!&nbsp;&nbsp;</h1>
-<a href="idTool.html" class="cta-button">Click to Get Instructions of How to Change Your Legal ID in Michigan&nbsp; &nbsp; &nbsp; &nbsp;</a>
-
+    <div class="navbar" style="color:white">
+        <a href="/">Home</a>
+        <a href="instructions.html">Instructions</a>
+        </div>
         
+        
+           <div class="center" >
+            <br>
+            <h1 class="title">Click this button to get instructions on how to change your Legal ID</h1>
 
-        <div class="info-panel">
-          <h2>Automate Your Paperwork</h2>
-            <p>GR Transfoundation has worked with some lovely folk to create a tool that automates filling out your ID change forms&nbsp;</p>
-            <a href="https://www.transpapers.lgbt" target="_blank">Visit TransPapers.lgbt →</a>
-      </div>
-    </div>
+            <br>
+            <a href="instructions.html" class="button"><div>Legal ID Instructions</div></a>
+            <br>
+            <b>Contact:</b> <a href="mailto:identitymichiganinfo@gmail.com">identitymichiganinfo@gmail.com</a>
+            <br>
+            <br>
+            <br>
+            <br>
+            <h1 class="title">
+                What is this website?
+            </h1>
+            <p class="">
+             Unfortunately, being trans* in the United States is not straight forward, and often causes immense stress. Within a <b>2015</b> study conducted by the <b>William's Institute</b>
+             
+             <sup class="citation" ><a href="https://williamsinstitute.law.ucla.edu/publications/gender-marker-policies/">1</a></sup>
+             
+             , half of their respondents did not have a gender concordant driver's license—relating to increased questioning by law enforcment, which can compound within individuals who already exist in a marginalized class (race, ethnicity, poverty, etc.) <strong>Michigan</strong> is the highest in the United States, where it's up to <strong>78%</strong>
+             
+             <sup class="citation" ><a href="https://williamsinstitute.law.ucla.edu/press/gender-marker-press-release/">2</a></sup> 
+             
+             of the population having no gender-concordant documents.
+             <br>
+             <br>
+             This is related to not only the self esteem of these individuals, but also suicidality <sup class="citation" >
+                
+                <a  href="https://doi.org/10.1016/S2468-2667(20)30032-3">3</a>, 
+
+                <a  href="https://doi.org/10.1016/j.jadohealth.2018.02.003">4</a>, <a href="https://doi.org/10.3390/ijerph19095016">5</a></sup>.
+             <br>
+             <br>
+             With the Trump administration's attack on basic human rights<sup class="citation" >
+                <a  href="https://www.theguardian.com/us-news/2025/feb/14/white-house-ap-ban-oval-office">5<a>, 
+                
+                <a  href="https://www.nytimes.com/2025/02/13/us/trump-trans-youth-health-providers.html">6</a>, 
+                
+                <a href="https://www.cbsnews.com/news/us-army-bars-transgender-people-enlisting-trump-executive-action/">7</a>, 
+
+                <a href="https://www.npr.org/2025/02/15/nx-s1-5298679/eeoc-gender-discrimination-case-trump-order">8</a>
+
+            </sup>, it creates a dangerous situation for many non-gender conforming people, where in their day-to-day lives they can be put in danger because of the mismatch of their internal identity and how others view them. 
+            <!--It is a basic fact that many people have an internal bias against transgender people<sup><a href="">7</a>, <a href="">8</a></sup>, and it's common that transgender people complain about discrimination they may face because of others knowing of their trans identity <sup><a href="https://doi.org/10.1016/j.labeco.2021.102072">9</a></sup>. -->
+
+            
+             <br>
+             <br>
+             <br>
+             <br>
+             <br>
+            
+
+            </p>
+
+
+        </div>
+
+
+
+    
 </body>
 </html>
